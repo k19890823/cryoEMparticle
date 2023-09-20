@@ -1,0 +1,1914 @@
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+2021-07-21 23:16:34,053 - mmdet - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.8.5 (default, Sep  4 2020, 07:30:14) [GCC 7.3.0]
+CUDA available: True
+GPU 0,1,2,3,4,5: GeForce RTX 3090
+CUDA_HOME: /usr/local/cuda-11.1
+NVCC: Build cuda_11.1.TC455_06.29190527_0
+GCC: gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
+PyTorch: 1.7.1+cu110
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) Math Kernel Library Version 2020.0.2 Product Build 20200624 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v1.6.0 (Git Hash 5ef631a030a6f73131c77892041042805a06064f)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 11.0
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80
+  - CuDNN 8.0.5
+  - Magma 2.5.2
+  - Build settings: BLAS=MKL, BUILD_TYPE=Release, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DUSE_VULKAN_WRAPPER -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, USE_CUDA=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+TorchVision: 0.8.2+cu110
+OpenCV: 4.4.0
+MMCV: 1.3.5
+MMCV Compiler: GCC 7.5
+MMCV CUDA Compiler: 11.1
+MMDetection: 2.11.0+02baa30
+------------------------------------------------------------
+
+2021-07-21 23:16:36,660 - mmdet - INFO - Distributed training: True
+2021-07-21 23:16:39,175 - mmdet - INFO - Config:
+model = dict(
+    type='CascadeRCNN',
+    pretrained=None,
+    backbone=dict(
+        type='SwinTransformer',
+        embed_dim=128,
+        depths=[2, 2, 18, 2],
+        num_heads=[4, 8, 16, 32],
+        window_size=7,
+        mlp_ratio=4.0,
+        qkv_bias=True,
+        qk_scale=None,
+        drop_rate=0.0,
+        attn_drop_rate=0.0,
+        drop_path_rate=0.3,
+        ape=False,
+        patch_norm=True,
+        out_indices=(0, 1, 2, 3),
+        use_checkpoint=False),
+    neck=dict(
+        type='FPN',
+        in_channels=[128, 256, 512, 1024],
+        out_channels=256,
+        num_outs=5),
+    rpn_head=dict(
+        type='RPNHead',
+        in_channels=256,
+        feat_channels=256,
+        anchor_generator=dict(
+            type='AnchorGenerator',
+            scales=[8],
+            ratios=[0.5, 1.0, 2.0],
+            strides=[4, 8, 16, 32, 64]),
+        bbox_coder=dict(
+            type='DeltaXYWHBBoxCoder',
+            target_means=[0.0, 0.0, 0.0, 0.0],
+            target_stds=[1.0, 1.0, 1.0, 1.0]),
+        loss_cls=dict(
+            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
+        loss_bbox=dict(
+            type='SmoothL1Loss', beta=0.1111111111111111, loss_weight=1.0)),
+    roi_head=dict(
+        type='CascadeRoIHead',
+        num_stages=3,
+        stage_loss_weights=[1, 0.5, 0.25],
+        bbox_roi_extractor=dict(
+            type='SingleRoIExtractor',
+            roi_layer=dict(type='RoIAlign', output_size=7, sampling_ratio=0),
+            out_channels=256,
+            featmap_strides=[4, 8, 16, 32]),
+        bbox_head=[
+            dict(
+                type='ConvFCBBoxHead',
+                num_shared_convs=4,
+                num_shared_fcs=1,
+                in_channels=256,
+                conv_out_channels=256,
+                fc_out_channels=1024,
+                roi_feat_size=7,
+                num_classes=2,
+                bbox_coder=dict(
+                    type='DeltaXYWHBBoxCoder',
+                    target_means=[0.0, 0.0, 0.0, 0.0],
+                    target_stds=[0.1, 0.1, 0.2, 0.2]),
+                reg_class_agnostic=False,
+                reg_decoded_bbox=True,
+                norm_cfg=dict(type='SyncBN', requires_grad=True),
+                loss_cls=dict(
+                    type='CrossEntropyLoss',
+                    use_sigmoid=False,
+                    loss_weight=1.0),
+                loss_bbox=dict(type='GIoULoss', loss_weight=10.0)),
+            dict(
+                type='ConvFCBBoxHead',
+                num_shared_convs=4,
+                num_shared_fcs=1,
+                in_channels=256,
+                conv_out_channels=256,
+                fc_out_channels=1024,
+                roi_feat_size=7,
+                num_classes=2,
+                bbox_coder=dict(
+                    type='DeltaXYWHBBoxCoder',
+                    target_means=[0.0, 0.0, 0.0, 0.0],
+                    target_stds=[0.05, 0.05, 0.1, 0.1]),
+                reg_class_agnostic=False,
+                reg_decoded_bbox=True,
+                norm_cfg=dict(type='SyncBN', requires_grad=True),
+                loss_cls=dict(
+                    type='CrossEntropyLoss',
+                    use_sigmoid=False,
+                    loss_weight=1.0),
+                loss_bbox=dict(type='GIoULoss', loss_weight=10.0)),
+            dict(
+                type='ConvFCBBoxHead',
+                num_shared_convs=4,
+                num_shared_fcs=1,
+                in_channels=256,
+                conv_out_channels=256,
+                fc_out_channels=1024,
+                roi_feat_size=7,
+                num_classes=2,
+                bbox_coder=dict(
+                    type='DeltaXYWHBBoxCoder',
+                    target_means=[0.0, 0.0, 0.0, 0.0],
+                    target_stds=[0.033, 0.033, 0.067, 0.067]),
+                reg_class_agnostic=False,
+                reg_decoded_bbox=True,
+                norm_cfg=dict(type='SyncBN', requires_grad=True),
+                loss_cls=dict(
+                    type='CrossEntropyLoss',
+                    use_sigmoid=False,
+                    loss_weight=1.0),
+                loss_bbox=dict(type='GIoULoss', loss_weight=10.0))
+        ]),
+    train_cfg=dict(
+        rpn=dict(
+            assigner=dict(
+                type='MaxIoUAssigner',
+                pos_iou_thr=0.7,
+                neg_iou_thr=0.3,
+                min_pos_iou=0.3,
+                match_low_quality=True,
+                ignore_iof_thr=-1),
+            sampler=dict(
+                type='RandomSampler',
+                num=256,
+                pos_fraction=0.5,
+                neg_pos_ub=-1,
+                add_gt_as_proposals=False),
+            allowed_border=0,
+            pos_weight=-1,
+            debug=False),
+        rpn_proposal=dict(
+            nms_across_levels=False,
+            nms_pre=2000,
+            nms_post=2000,
+            max_per_img=2000,
+            nms=dict(type='nms', iou_threshold=0.7),
+            min_bbox_size=0),
+        rcnn=[
+            dict(
+                assigner=dict(
+                    type='MaxIoUAssigner',
+                    pos_iou_thr=0.5,
+                    neg_iou_thr=0.5,
+                    min_pos_iou=0.5,
+                    match_low_quality=False,
+                    ignore_iof_thr=-1),
+                sampler=dict(
+                    type='RandomSampler',
+                    num=512,
+                    pos_fraction=0.25,
+                    neg_pos_ub=-1,
+                    add_gt_as_proposals=True),
+                pos_weight=-1,
+                debug=False),
+            dict(
+                assigner=dict(
+                    type='MaxIoUAssigner',
+                    pos_iou_thr=0.6,
+                    neg_iou_thr=0.6,
+                    min_pos_iou=0.6,
+                    match_low_quality=False,
+                    ignore_iof_thr=-1),
+                sampler=dict(
+                    type='RandomSampler',
+                    num=512,
+                    pos_fraction=0.25,
+                    neg_pos_ub=-1,
+                    add_gt_as_proposals=True),
+                pos_weight=-1,
+                debug=False),
+            dict(
+                assigner=dict(
+                    type='MaxIoUAssigner',
+                    pos_iou_thr=0.7,
+                    neg_iou_thr=0.7,
+                    min_pos_iou=0.7,
+                    match_low_quality=False,
+                    ignore_iof_thr=-1),
+                sampler=dict(
+                    type='RandomSampler',
+                    num=512,
+                    pos_fraction=0.25,
+                    neg_pos_ub=-1,
+                    add_gt_as_proposals=True),
+                pos_weight=-1,
+                debug=False)
+        ]),
+    test_cfg=dict(
+        rpn=dict(
+            nms_across_levels=False,
+            nms_pre=1000,
+            nms_post=1000,
+            max_per_img=1000,
+            nms=dict(type='nms', iou_threshold=0.7),
+            min_bbox_size=0),
+        rcnn=dict(
+            score_thr=0.05,
+            nms=dict(type='nms', iou_threshold=0.5),
+            max_per_img=100)))
+dataset_type = 'CocoDataset'
+data_root = '/data/mmdetection/data/sense/'
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=False),
+    dict(type='RandomFlip', flip_ratio=0.5),
+    dict(
+        type='AutoAugment',
+        policies=[[{
+            'type':
+            'Resize',
+            'img_scale': [(480, 1333), (512, 1333), (544, 1333), (576, 1333),
+                          (608, 1333), (640, 1333), (672, 1333), (704, 1333),
+                          (736, 1333), (768, 1333), (800, 1333)],
+            'multiscale_mode':
+            'value',
+            'keep_ratio':
+            True
+        }],
+                  [{
+                      'type': 'Resize',
+                      'img_scale': [(400, 1333), (500, 1333), (600, 1333)],
+                      'multiscale_mode': 'value',
+                      'keep_ratio': True
+                  }, {
+                      'type': 'RandomCrop',
+                      'crop_type': 'absolute_range',
+                      'crop_size': (384, 600),
+                      'allow_negative_crop': True
+                  }, {
+                      'type':
+                      'Resize',
+                      'img_scale': [(480, 1333), (512, 1333), (544, 1333),
+                                    (576, 1333), (608, 1333), (640, 1333),
+                                    (672, 1333), (704, 1333), (736, 1333),
+                                    (768, 1333), (800, 1333)],
+                      'multiscale_mode':
+                      'value',
+                      'override':
+                      True,
+                      'keep_ratio':
+                      True
+                  }]]),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size_divisor=32),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(1333, 800),
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=32),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img'])
+        ])
+]
+data = dict(
+    samples_per_gpu=2,
+    workers_per_gpu=2,
+    train=dict(
+        type='CocoDataset',
+        ann_file='/data/mmdetection/data/sense/annotations/train.json',
+        img_prefix='/data/mmdetection/data/sense/train',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations', with_bbox=True, with_mask=False),
+            dict(type='RandomFlip', flip_ratio=0.5),
+            dict(
+                type='AutoAugment',
+                policies=[[{
+                    'type':
+                    'Resize',
+                    'img_scale': [(480, 1333), (512, 1333), (544, 1333),
+                                  (576, 1333), (608, 1333), (640, 1333),
+                                  (672, 1333), (704, 1333), (736, 1333),
+                                  (768, 1333), (800, 1333)],
+                    'multiscale_mode':
+                    'value',
+                    'keep_ratio':
+                    True
+                }],
+                          [{
+                              'type': 'Resize',
+                              'img_scale': [(400, 1333), (500, 1333),
+                                            (600, 1333)],
+                              'multiscale_mode': 'value',
+                              'keep_ratio': True
+                          }, {
+                              'type': 'RandomCrop',
+                              'crop_type': 'absolute_range',
+                              'crop_size': (384, 600),
+                              'allow_negative_crop': True
+                          }, {
+                              'type':
+                              'Resize',
+                              'img_scale': [(480, 1333), (512, 1333),
+                                            (544, 1333), (576, 1333),
+                                            (608, 1333), (640, 1333),
+                                            (672, 1333), (704, 1333),
+                                            (736, 1333), (768, 1333),
+                                            (800, 1333)],
+                              'multiscale_mode':
+                              'value',
+                              'override':
+                              True,
+                              'keep_ratio':
+                              True
+                          }]]),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=32),
+            dict(type='DefaultFormatBundle'),
+            dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+        ],
+        classes=('Airport', 'Port')),
+    val=dict(
+        type='CocoDataset',
+        ann_file='/data/mmdetection/data/sense/annotations/val.json',
+        img_prefix='/data/mmdetection/data/sense/val',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(1333, 800),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='Pad', size_divisor=32),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ],
+        classes=('Airport', 'Port')),
+    test=dict(
+        type='CocoDataset',
+        ann_file='/data/mmdetection/data/sense/annotations/val.json',
+        img_prefix='/data/mmdetection/data/sense/val',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(1333, 800),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='Pad', size_divisor=32),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ],
+        classes=('Airport', 'Port')))
+evaluation = dict(interval=1, metric=['bbox'])
+optimizer = dict(
+    type='AdamW',
+    lr=2.5e-05,
+    betas=(0.9, 0.999),
+    weight_decay=0.05,
+    paramwise_cfg=dict(
+        custom_keys=dict(
+            absolute_pos_embed=dict(decay_mult=0.0),
+            relative_position_bias_table=dict(decay_mult=0.0),
+            norm=dict(decay_mult=0.0))))
+optimizer_config = dict(grad_clip=None)
+lr_config = dict(
+    policy='step',
+    warmup='linear',
+    warmup_iters=500,
+    warmup_ratio=0.001,
+    step=[16, 22])
+runner = dict(type='EpochBasedRunner', max_epochs=24)
+checkpoint_config = dict(interval=1)
+log_config = dict(interval=200, hooks=[dict(type='TextLoggerHook')])
+custom_hooks = [dict(type='NumClassCheckHook')]
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = './chechpoints/cascade_mask_rcnn_swin_base_patch4_window7.pth'
+resume_from = None
+workflow = [('train', 1)]
+classes = ('Airport', 'Port')
+work_dir = './work_dirs/cascade_rcnn_swin_base_sense'
+gpu_ids = range(0, 2)
+
+loading annotations into memory...
+Done (t=0.00s)
+creating index...
+index created!
+loading annotations into memory...
+Done (t=0.00s)
+creating index...
+index created!
+loading annotations into memory...
+Done (t=0.00s)
+creating index...
+index created!
+loading annotations into memory...
+Done (t=0.00s)
+creating index...
+index created!
+2021-07-21 23:16:41,414 - mmdet - INFO - load checkpoint from ./chechpoints/cascade_mask_rcnn_swin_base_patch4_window7.pth
+2021-07-21 23:16:41,414 - mmdet - INFO - Use load_from_local loader
+2021-07-21 23:16:41,953 - mmdet - WARNING - The model and loaded state dict do not match exactly
+
+size mismatch for roi_head.bbox_head.0.fc_cls.weight: copying a param with shape torch.Size([81, 1024]) from checkpoint, the shape in current model is torch.Size([3, 1024]).
+size mismatch for roi_head.bbox_head.0.fc_cls.bias: copying a param with shape torch.Size([81]) from checkpoint, the shape in current model is torch.Size([3]).
+size mismatch for roi_head.bbox_head.0.fc_reg.weight: copying a param with shape torch.Size([320, 1024]) from checkpoint, the shape in current model is torch.Size([8, 1024]).
+size mismatch for roi_head.bbox_head.0.fc_reg.bias: copying a param with shape torch.Size([320]) from checkpoint, the shape in current model is torch.Size([8]).
+size mismatch for roi_head.bbox_head.1.fc_cls.weight: copying a param with shape torch.Size([81, 1024]) from checkpoint, the shape in current model is torch.Size([3, 1024]).
+size mismatch for roi_head.bbox_head.1.fc_cls.bias: copying a param with shape torch.Size([81]) from checkpoint, the shape in current model is torch.Size([3]).
+size mismatch for roi_head.bbox_head.1.fc_reg.weight: copying a param with shape torch.Size([320, 1024]) from checkpoint, the shape in current model is torch.Size([8, 1024]).
+size mismatch for roi_head.bbox_head.1.fc_reg.bias: copying a param with shape torch.Size([320]) from checkpoint, the shape in current model is torch.Size([8]).
+size mismatch for roi_head.bbox_head.2.fc_cls.weight: copying a param with shape torch.Size([81, 1024]) from checkpoint, the shape in current model is torch.Size([3, 1024]).
+size mismatch for roi_head.bbox_head.2.fc_cls.bias: copying a param with shape torch.Size([81]) from checkpoint, the shape in current model is torch.Size([3]).
+size mismatch for roi_head.bbox_head.2.fc_reg.weight: copying a param with shape torch.Size([320, 1024]) from checkpoint, the shape in current model is torch.Size([8, 1024]).
+size mismatch for roi_head.bbox_head.2.fc_reg.bias: copying a param with shape torch.Size([320]) from checkpoint, the shape in current model is torch.Size([8]).
+unexpected key in source state_dict: roi_head.mask_head.0.convs.0.conv.weight, roi_head.mask_head.0.convs.0.conv.bias, roi_head.mask_head.0.convs.1.conv.weight, roi_head.mask_head.0.convs.1.conv.bias, roi_head.mask_head.0.convs.2.conv.weight, roi_head.mask_head.0.convs.2.conv.bias, roi_head.mask_head.0.convs.3.conv.weight, roi_head.mask_head.0.convs.3.conv.bias, roi_head.mask_head.0.upsample.weight, roi_head.mask_head.0.upsample.bias, roi_head.mask_head.0.conv_logits.weight, roi_head.mask_head.0.conv_logits.bias, roi_head.mask_head.1.convs.0.conv.weight, roi_head.mask_head.1.convs.0.conv.bias, roi_head.mask_head.1.convs.1.conv.weight, roi_head.mask_head.1.convs.1.conv.bias, roi_head.mask_head.1.convs.2.conv.weight, roi_head.mask_head.1.convs.2.conv.bias, roi_head.mask_head.1.convs.3.conv.weight, roi_head.mask_head.1.convs.3.conv.bias, roi_head.mask_head.1.upsample.weight, roi_head.mask_head.1.upsample.bias, roi_head.mask_head.1.conv_logits.weight, roi_head.mask_head.1.conv_logits.bias, roi_head.mask_head.2.convs.0.conv.weight, roi_head.mask_head.2.convs.0.conv.bias, roi_head.mask_head.2.convs.1.conv.weight, roi_head.mask_head.2.convs.1.conv.bias, roi_head.mask_head.2.convs.2.conv.weight, roi_head.mask_head.2.convs.2.conv.bias, roi_head.mask_head.2.convs.3.conv.weight, roi_head.mask_head.2.convs.3.conv.bias, roi_head.mask_head.2.upsample.weight, roi_head.mask_head.2.upsample.bias, roi_head.mask_head.2.conv_logits.weight, roi_head.mask_head.2.conv_logits.bias
+
+2021-07-21 23:16:41,970 - mmdet - INFO - Start running, host: gsb@gsb-SYS-4029GP-TRT, work_dir: /data/dataset/fk-Swin-Transformer-Object-Detection/work_dirs/cascade_rcnn_swin_base_sense
+2021-07-21 23:16:41,970 - mmdet - INFO - workflow: [('train', 1)], max: 24 epochs
+2021-07-21 23:17:04,080 - mmcv - INFO - Reducer buckets have been rebuilt in this iteration.
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   225s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   109s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    71s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    51s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.6 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.7 task/s, elapsed: 9s, ETA:    31s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    26s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    22s[>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 10s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:18:35,875 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.01s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.10s).
+Accumulating evaluation results...
+DONE (t=0.04s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.008
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.018
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.010
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.008
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.094
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.094
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.094
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.094
+2021-07-21 23:18:36,021 - mmdet - INFO - Saving checkpoint at 1 epochs
+2021-07-21 23:18:39,408 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:18:39,408 - mmdet - INFO - Epoch(val) [1][68]	bbox_mAP: 0.0080, bbox_mAP_50: 0.0180, bbox_mAP_75: 0.0100, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.0080, bbox_mAP_copypaste: 0.008 0.018 0.010 -1.000 -1.000 0.008
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   223s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   108s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    70s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    51s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    31s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    26s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 10s, ETA:    16s[>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 10s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.5 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.2 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.4 task/s, elapsed: 12s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 12s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:20:01,931 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.01s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.10s).
+Accumulating evaluation results...
+DONE (t=0.04s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.068
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.138
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.069
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.068
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.273
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.273
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.273
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.273
+2021-07-21 23:20:02,086 - mmdet - INFO - Saving checkpoint at 2 epochs
+2021-07-21 23:20:05,521 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:20:05,521 - mmdet - INFO - Epoch(val) [2][68]	bbox_mAP: 0.0680, bbox_mAP_50: 0.1380, bbox_mAP_75: 0.0690, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.0680, bbox_mAP_copypaste: 0.068 0.138 0.069 -1.000 -1.000 0.068
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   231s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   111s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    72s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    52s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    47s[>>>>>>                            ] 6/30, 0.6 task/s, elapsed: 9s, ETA:    38s[>>>>>>>                          ] 7/30, 0.7 task/s, elapsed: 10s, ETA:    31s[>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 10s, ETA:    26s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    23s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    15s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.1 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 13s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 13s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.1 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.2 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.3 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:21:31,206 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.04s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.083
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.224
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.058
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.083
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.314
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.314
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.314
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.314
+2021-07-21 23:21:31,264 - mmdet - INFO - Saving checkpoint at 3 epochs
+2021-07-21 23:21:34,590 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:21:34,590 - mmdet - INFO - Epoch(val) [3][68]	bbox_mAP: 0.0830, bbox_mAP_50: 0.2240, bbox_mAP_75: 0.0580, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.0830, bbox_mAP_copypaste: 0.083 0.224 0.058 -1.000 -1.000 0.083
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   221s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   107s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    70s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    50s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    30s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    25s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 9s, ETA:    16s[>>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 9s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.4 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.5 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:22:55,901 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.101
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.283
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.059
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.101
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.299
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.299
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.299
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.299
+2021-07-21 23:22:55,934 - mmdet - INFO - Saving checkpoint at 4 epochs
+2021-07-21 23:22:59,432 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:22:59,432 - mmdet - INFO - Epoch(val) [4][68]	bbox_mAP: 0.1010, bbox_mAP_50: 0.2830, bbox_mAP_75: 0.0590, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.1010, bbox_mAP_copypaste: 0.101 0.283 0.059 -1.000 -1.000 0.101
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   223s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   107s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    70s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    51s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    30s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    25s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 9s, ETA:    16s[>>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 9s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.4 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.5 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.2 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.4 task/s, elapsed: 12s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 12s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:24:55,647 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.119
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.285
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.072
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.119
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.339
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.339
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.339
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.339
+2021-07-21 23:24:55,681 - mmdet - INFO - Saving checkpoint at 5 epochs
+2021-07-21 23:24:58,964 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:24:58,964 - mmdet - INFO - Epoch(val) [5][68]	bbox_mAP: 0.1190, bbox_mAP_50: 0.2850, bbox_mAP_75: 0.0720, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.1190, bbox_mAP_copypaste: 0.119 0.285 0.072 -1.000 -1.000 0.119
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   228s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   110s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    72s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    52s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.6 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.7 task/s, elapsed: 9s, ETA:    31s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    26s[>>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 10s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 12s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 12s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:26:34,998 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.166
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.384
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.150
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.166
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.420
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.420
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.420
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.420
+2021-07-21 23:26:35,030 - mmdet - INFO - Saving checkpoint at 6 epochs
+2021-07-21 23:26:38,368 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:26:38,368 - mmdet - INFO - Epoch(val) [6][68]	bbox_mAP: 0.1660, bbox_mAP_50: 0.3840, bbox_mAP_75: 0.1500, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.1660, bbox_mAP_copypaste: 0.166 0.384 0.150 -1.000 -1.000 0.166
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   221s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   107s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    70s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    50s[>>>>>                             ] 5/30, 0.6 task/s, elapsed: 9s, ETA:    45s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    36s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    30s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    25s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 9s, ETA:    16s[>>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 9s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.4 task/s, elapsed: 10s, ETA:    12s[>>>>>>>>>>>>>>                  ] 14/30, 1.5 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.6 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.2 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.2 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.4 task/s, elapsed: 12s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.5 task/s, elapsed: 12s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:28:00,883 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.205
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.529
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.136
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.205
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.402
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.402
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.402
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.402
+2021-07-21 23:28:00,914 - mmdet - INFO - Saving checkpoint at 7 epochs
+2021-07-21 23:28:04,285 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:28:04,285 - mmdet - INFO - Epoch(val) [7][68]	bbox_mAP: 0.2050, bbox_mAP_50: 0.5290, bbox_mAP_75: 0.1360, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.2050, bbox_mAP_copypaste: 0.205 0.529 0.136 -1.000 -1.000 0.205
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   227s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   110s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    72s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    52s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    47s[>>>>>>                            ] 6/30, 0.6 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.7 task/s, elapsed: 9s, ETA:    31s[>>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 9s, ETA:    26s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    22s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    15s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 13s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 13s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.1 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.2 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.3 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:29:27,461 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.244
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.575
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.097
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.244
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.404
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.404
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.404
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.404
+2021-07-21 23:29:27,488 - mmdet - INFO - Saving checkpoint at 8 epochs
+2021-07-21 23:29:30,696 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:29:30,696 - mmdet - INFO - Epoch(val) [8][68]	bbox_mAP: 0.2440, bbox_mAP_50: 0.5750, bbox_mAP_75: 0.0970, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.2440, bbox_mAP_copypaste: 0.244 0.575 0.097 -1.000 -1.000 0.244
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   224s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   108s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    71s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    51s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    31s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    26s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 10s, ETA:    16s[>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 10s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.2 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 12s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 12s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:30:55,256 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.260
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.651
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.138
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.260
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.390
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.390
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.390
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.390
+2021-07-21 23:30:55,281 - mmdet - INFO - Saving checkpoint at 9 epochs
+2021-07-21 23:30:58,460 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:30:58,460 - mmdet - INFO - Epoch(val) [9][68]	bbox_mAP: 0.2600, bbox_mAP_50: 0.6510, bbox_mAP_75: 0.1380, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.2600, bbox_mAP_copypaste: 0.260 0.651 0.138 -1.000 -1.000 0.260
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   223s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   108s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    70s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    51s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    31s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    26s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 10s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:32:22,233 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.271
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.615
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.170
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.271
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.351
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.351
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.351
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.351
+2021-07-21 23:32:22,254 - mmdet - INFO - Saving checkpoint at 10 epochs
+2021-07-21 23:32:25,579 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:32:25,580 - mmdet - INFO - Epoch(val) [10][68]	bbox_mAP: 0.2710, bbox_mAP_50: 0.6150, bbox_mAP_75: 0.1700, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.2710, bbox_mAP_copypaste: 0.271 0.615 0.170 -1.000 -1.000 0.271
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   233s[>>                                ] 2/30, 0.2 task/s, elapsed: 8s, ETA:   113s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    73s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    53s[>>>>>                            ] 5/30, 0.5 task/s, elapsed: 10s, ETA:    48s[>>>>>>                           ] 6/30, 0.6 task/s, elapsed: 10s, ETA:    39s[>>>>>>>                          ] 7/30, 0.7 task/s, elapsed: 10s, ETA:    32s[>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 10s, ETA:    27s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    23s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    20s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    15s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    12s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.6 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.7 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.8 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 1.9 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 1.9 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.0 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.1 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 1.9 task/s, elapsed: 13s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.0 task/s, elapsed: 13s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.1 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.2 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.2 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.3 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:33:48,857 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.318
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.626
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.253
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.318
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.400
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.400
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.400
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.400
+2021-07-21 23:33:48,877 - mmdet - INFO - Saving checkpoint at 11 epochs
+2021-07-21 23:33:52,227 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:33:52,228 - mmdet - INFO - Epoch(val) [11][68]	bbox_mAP: 0.3180, bbox_mAP_50: 0.6260, bbox_mAP_75: 0.2530, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.3180, bbox_mAP_copypaste: 0.318 0.626 0.253 -1.000 -1.000 0.318
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   232s[>>                                ] 2/30, 0.2 task/s, elapsed: 8s, ETA:   112s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    73s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    53s[>>>>>                            ] 5/30, 0.5 task/s, elapsed: 10s, ETA:    48s[>>>>>>                           ] 6/30, 0.6 task/s, elapsed: 10s, ETA:    38s[>>>>>>>                          ] 7/30, 0.7 task/s, elapsed: 10s, ETA:    32s[>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 10s, ETA:    27s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    23s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    20s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    15s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.8 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 1.9 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.1 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 13s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 13s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.1 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.2 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.3 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:35:18,685 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.384
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.641
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.465
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.384
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.451
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.451
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.451
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.451
+2021-07-21 23:35:18,710 - mmdet - INFO - Saving checkpoint at 12 epochs
+2021-07-21 23:35:22,019 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:35:22,019 - mmdet - INFO - Epoch(val) [12][68]	bbox_mAP: 0.3840, bbox_mAP_50: 0.6410, bbox_mAP_75: 0.4650, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.3840, bbox_mAP_copypaste: 0.384 0.641 0.465 -1.000 -1.000 0.384
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   225s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   109s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    71s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    51s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.6 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.7 task/s, elapsed: 9s, ETA:    31s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    26s[>>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 10s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 12s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 12s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:37:14,456 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.347
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.676
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.319
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.347
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.429
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.429
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.429
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.429
+2021-07-21 23:37:14,487 - mmdet - INFO - Saving checkpoint at 13 epochs
+2021-07-21 23:37:17,933 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:37:17,934 - mmdet - INFO - Epoch(val) [13][68]	bbox_mAP: 0.3470, bbox_mAP_50: 0.6760, bbox_mAP_75: 0.3190, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.3470, bbox_mAP_copypaste: 0.347 0.676 0.319 -1.000 -1.000 0.347
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   246s[>>                                ] 2/30, 0.2 task/s, elapsed: 8s, ETA:   119s[>>>                               ] 3/30, 0.3 task/s, elapsed: 9s, ETA:    77s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 9s, ETA:    56s[>>>>>                            ] 5/30, 0.5 task/s, elapsed: 10s, ETA:    50s[>>>>>>                           ] 6/30, 0.6 task/s, elapsed: 10s, ETA:    40s[>>>>>>>                          ] 7/30, 0.7 task/s, elapsed: 10s, ETA:    33s[>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 10s, ETA:    28s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    24s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    21s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    18s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    16s[>>>>>>>>>>>>>                   ] 13/30, 1.2 task/s, elapsed: 11s, ETA:    14s[>>>>>>>>>>>>>>                  ] 14/30, 1.3 task/s, elapsed: 11s, ETA:    12s[>>>>>>>>>>>>>>>>                ] 15/30, 1.4 task/s, elapsed: 11s, ETA:    11s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.5 task/s, elapsed: 11s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.6 task/s, elapsed: 11s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.7 task/s, elapsed: 11s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.8 task/s, elapsed: 11s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 1.9 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 1.9 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.0 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.0 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.1 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 1.9 task/s, elapsed: 13s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.0 task/s, elapsed: 13s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.0 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.1 task/s, elapsed: 13s, ETA:     1sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.2 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.2 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:38:45,180 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.382
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.701
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.362
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.382
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.449
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.449
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.449
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.449
+2021-07-21 23:38:45,204 - mmdet - INFO - Saving checkpoint at 14 epochs
+2021-07-21 23:38:48,577 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:38:48,577 - mmdet - INFO - Epoch(val) [14][68]	bbox_mAP: 0.3820, bbox_mAP_50: 0.7010, bbox_mAP_75: 0.3620, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.3820, bbox_mAP_copypaste: 0.382 0.701 0.362 -1.000 -1.000 0.382
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   221s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   107s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    70s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    50s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    30s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    25s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 9s, ETA:    16s[>>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 9s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.4 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.5 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.2 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 12s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 12s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:40:34,823 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.416
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.746
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.406
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.416
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.479
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.479
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.479
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.479
+2021-07-21 23:40:34,842 - mmdet - INFO - Saving checkpoint at 15 epochs
+2021-07-21 23:40:38,232 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:40:38,232 - mmdet - INFO - Epoch(val) [15][68]	bbox_mAP: 0.4160, bbox_mAP_50: 0.7460, bbox_mAP_75: 0.4060, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.4160, bbox_mAP_copypaste: 0.416 0.746 0.406 -1.000 -1.000 0.416
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   228s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   110s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    72s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    52s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.6 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.7 task/s, elapsed: 9s, ETA:    31s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    26s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 10s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:42:08,897 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.314
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.694
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.255
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.314
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.410
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.410
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.410
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.410
+2021-07-21 23:42:08,917 - mmdet - INFO - Saving checkpoint at 16 epochs
+2021-07-21 23:42:12,156 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:42:12,156 - mmdet - INFO - Epoch(val) [16][68]	bbox_mAP: 0.3140, bbox_mAP_50: 0.6940, bbox_mAP_75: 0.2550, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.3140, bbox_mAP_copypaste: 0.314 0.694 0.255 -1.000 -1.000 0.314
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   220s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   106s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    69s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    50s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    46s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    30s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    25s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 9s, ETA:    16s[>>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 9s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.5 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.2 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 12s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 12s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:43:40,826 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.399
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.736
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.363
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.399
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.486
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.486
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.486
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.486
+2021-07-21 23:43:40,846 - mmdet - INFO - Saving checkpoint at 17 epochs
+2021-07-21 23:43:44,327 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:43:44,327 - mmdet - INFO - Epoch(val) [17][68]	bbox_mAP: 0.3990, bbox_mAP_50: 0.7360, bbox_mAP_75: 0.3630, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.3990, bbox_mAP_copypaste: 0.399 0.736 0.363 -1.000 -1.000 0.399
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   227s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   110s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    71s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    52s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    47s[>>>>>>                            ] 6/30, 0.6 task/s, elapsed: 9s, ETA:    38s[>>>>>>>                          ] 7/30, 0.7 task/s, elapsed: 10s, ETA:    31s[>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 10s, ETA:    26s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    23s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    15s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:45:12,233 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.410
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.750
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.424
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.410
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.490
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.490
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.490
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.490
+2021-07-21 23:45:12,252 - mmdet - INFO - Saving checkpoint at 18 epochs
+2021-07-21 23:45:15,532 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:45:15,532 - mmdet - INFO - Epoch(val) [18][68]	bbox_mAP: 0.4100, bbox_mAP_50: 0.7500, bbox_mAP_75: 0.4240, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.4100, bbox_mAP_copypaste: 0.410 0.750 0.424 -1.000 -1.000 0.410
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   222s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   107s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    70s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    51s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    47s[>>>>>>                            ] 6/30, 0.6 task/s, elapsed: 9s, ETA:    37s[>>>>>>>                           ] 7/30, 0.7 task/s, elapsed: 9s, ETA:    31s[>>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 9s, ETA:    26s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    22s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    15s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 13s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 13s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.1 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.2 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.2 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.3 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:47:00,420 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.434
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.787
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.457
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.434
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.507
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.507
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.507
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.507
+2021-07-21 23:47:00,439 - mmdet - INFO - Saving checkpoint at 19 epochs
+2021-07-21 23:47:03,920 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:47:03,920 - mmdet - INFO - Epoch(val) [19][68]	bbox_mAP: 0.4340, bbox_mAP_50: 0.7870, bbox_mAP_75: 0.4570, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.4340, bbox_mAP_copypaste: 0.434 0.787 0.457 -1.000 -1.000 0.434
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   222s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   107s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    70s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    50s[>>>>>                             ] 5/30, 0.6 task/s, elapsed: 9s, ETA:    45s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    36s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    30s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    25s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    18s[>>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 9s, ETA:    16s[>>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 9s, ETA:    14s[>>>>>>>>>>>>>>                   ] 13/30, 1.4 task/s, elapsed: 9s, ETA:    12s[>>>>>>>>>>>>>>>                  ] 14/30, 1.5 task/s, elapsed: 9s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.6 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.2 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:48:41,940 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.02s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.428
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.796
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.458
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.428
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.501
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.501
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.501
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.501
+2021-07-21 23:48:41,972 - mmdet - INFO - Saving checkpoint at 20 epochs
+2021-07-21 23:48:45,455 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:48:45,455 - mmdet - INFO - Epoch(val) [20][68]	bbox_mAP: 0.4280, bbox_mAP_50: 0.7960, bbox_mAP_75: 0.4580, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.4280, bbox_mAP_copypaste: 0.428 0.796 0.458 -1.000 -1.000 0.428
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   223s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   107s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    70s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    51s[>>>>>                             ] 5/30, 0.6 task/s, elapsed: 9s, ETA:    45s[>>>>>>                            ] 6/30, 0.7 task/s, elapsed: 9s, ETA:    36s[>>>>>>>                           ] 7/30, 0.8 task/s, elapsed: 9s, ETA:    30s[>>>>>>>>>                         ] 8/30, 0.9 task/s, elapsed: 9s, ETA:    25s[>>>>>>>>>>                        ] 9/30, 1.0 task/s, elapsed: 9s, ETA:    22s[>>>>>>>>>>>                      ] 10/30, 1.1 task/s, elapsed: 9s, ETA:    19s[>>>>>>>>>>>>                     ] 11/30, 1.2 task/s, elapsed: 9s, ETA:    16s[>>>>>>>>>>>>>                    ] 12/30, 1.3 task/s, elapsed: 9s, ETA:    14s[>>>>>>>>>>>>>                   ] 13/30, 1.4 task/s, elapsed: 10s, ETA:    12s[>>>>>>>>>>>>>>                  ] 14/30, 1.5 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.6 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.1 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.2 task/s, elapsed: 10s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 10s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.2 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.3 task/s, elapsed: 12s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.4 task/s, elapsed: 12s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.5 task/s, elapsed: 12s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:50:22,965 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.437
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.803
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.467
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.437
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.504
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.504
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.504
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.504
+2021-07-21 23:50:22,986 - mmdet - INFO - Saving checkpoint at 21 epochs
+2021-07-21 23:50:26,308 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:50:26,308 - mmdet - INFO - Epoch(val) [21][68]	bbox_mAP: 0.4370, bbox_mAP_50: 0.8030, bbox_mAP_75: 0.4670, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.4370, bbox_mAP_copypaste: 0.437 0.803 0.467 -1.000 -1.000 0.437
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   231s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   112s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    73s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    53s[>>>>>                            ] 5/30, 0.5 task/s, elapsed: 10s, ETA:    48s[>>>>>>                           ] 6/30, 0.6 task/s, elapsed: 10s, ETA:    38s[>>>>>>>                          ] 7/30, 0.7 task/s, elapsed: 10s, ETA:    32s[>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 10s, ETA:    26s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    23s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    15s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.8 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 1.9 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.1 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 13s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 13s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.1 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.2 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.2 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.3 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:52:15,774 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.447
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.805
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.468
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.447
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.513
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.513
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.513
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.513
+2021-07-21 23:52:15,792 - mmdet - INFO - Saving checkpoint at 22 epochs
+2021-07-21 23:52:19,287 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:52:19,287 - mmdet - INFO - Epoch(val) [22][68]	bbox_mAP: 0.4470, bbox_mAP_50: 0.8050, bbox_mAP_75: 0.4680, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.4470, bbox_mAP_copypaste: 0.447 0.805 0.468 -1.000 -1.000 0.447
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   232s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   112s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    73s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    53s[>>>>>                            ] 5/30, 0.5 task/s, elapsed: 10s, ETA:    48s[>>>>>>                           ] 6/30, 0.6 task/s, elapsed: 10s, ETA:    39s[>>>>>>>                          ] 7/30, 0.7 task/s, elapsed: 10s, ETA:    32s[>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 10s, ETA:    27s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    23s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    20s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    15s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    12s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.6 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.7 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.8 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 1.9 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 1.9 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.0 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.1 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.2 task/s, elapsed: 11s, ETA:     3sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 13s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.0 task/s, elapsed: 13s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.1 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.2 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.2 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.3 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:53:52,592 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.444
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.805
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.470
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.444
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.510
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.510
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.510
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.510
+2021-07-21 23:53:52,619 - mmdet - INFO - Saving checkpoint at 23 epochs
+2021-07-21 23:53:55,952 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:53:55,952 - mmdet - INFO - Epoch(val) [23][68]	bbox_mAP: 0.4440, bbox_mAP_50: 0.8050, bbox_mAP_75: 0.4700, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.4440, bbox_mAP_copypaste: 0.444 0.805 0.470 -1.000 -1.000 0.444
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+[                                                  ] 0/30, elapsed: 0s, ETA:[>                                 ] 1/30, 0.1 task/s, elapsed: 8s, ETA:   227s[>>                                ] 2/30, 0.3 task/s, elapsed: 8s, ETA:   109s[>>>                               ] 3/30, 0.4 task/s, elapsed: 8s, ETA:    71s[>>>>                              ] 4/30, 0.5 task/s, elapsed: 8s, ETA:    52s[>>>>>                             ] 5/30, 0.5 task/s, elapsed: 9s, ETA:    47s[>>>>>>                            ] 6/30, 0.6 task/s, elapsed: 9s, ETA:    38s[>>>>>>>                          ] 7/30, 0.7 task/s, elapsed: 10s, ETA:    31s[>>>>>>>>                         ] 8/30, 0.8 task/s, elapsed: 10s, ETA:    26s[>>>>>>>>>                        ] 9/30, 0.9 task/s, elapsed: 10s, ETA:    23s[>>>>>>>>>>                      ] 10/30, 1.0 task/s, elapsed: 10s, ETA:    19s[>>>>>>>>>>>                     ] 11/30, 1.1 task/s, elapsed: 10s, ETA:    17s[>>>>>>>>>>>>                    ] 12/30, 1.2 task/s, elapsed: 10s, ETA:    15s[>>>>>>>>>>>>>                   ] 13/30, 1.3 task/s, elapsed: 10s, ETA:    13s[>>>>>>>>>>>>>>                  ] 14/30, 1.4 task/s, elapsed: 10s, ETA:    11s[>>>>>>>>>>>>>>>>                ] 15/30, 1.5 task/s, elapsed: 10s, ETA:    10s[>>>>>>>>>>>>>>>>>               ] 16/30, 1.6 task/s, elapsed: 10s, ETA:     9s[>>>>>>>>>>>>>>>>>>              ] 17/30, 1.7 task/s, elapsed: 10s, ETA:     8s[>>>>>>>>>>>>>>>>>>>             ] 18/30, 1.8 task/s, elapsed: 10s, ETA:     7s[>>>>>>>>>>>>>>>>>>>>            ] 19/30, 1.9 task/s, elapsed: 10s, ETA:     6s[>>>>>>>>>>>>>>>>>>>>>           ] 20/30, 2.0 task/s, elapsed: 10s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>          ] 21/30, 2.0 task/s, elapsed: 11s, ETA:     5s[>>>>>>>>>>>>>>>>>>>>>>>         ] 22/30, 2.1 task/s, elapsed: 11s, ETA:     4s[>>>>>>>>>>>>>>>>>>>>>>>>        ] 23/30, 2.2 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>       ] 24/30, 2.3 task/s, elapsed: 11s, ETA:     3s[>>>>>>>>>>>>>>>>>>>>>>>>>>      ] 25/30, 2.0 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>     ] 26/30, 2.1 task/s, elapsed: 12s, ETA:     2s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>    ] 27/30, 2.2 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ] 28/30, 2.2 task/s, elapsed: 13s, ETA:     1s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  ] 29/30, 2.3 task/s, elapsed: 13s, ETA:     0s[>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>] 30/30, 2.4 task/s, elapsed: 13s, ETA:     0sapex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+apex is not installed
+
+
+2021-07-21 23:55:33,192 - mmdet - INFO - Evaluating bbox...
+Loading and preparing results...
+DONE (t=0.00s)
+creating index...
+index created!
+Running per image evaluation...
+Evaluate annotation type *bbox*
+DONE (t=0.01s).
+Accumulating evaluation results...
+DONE (t=0.01s).
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.445
+Average Precision  (AP) @[ IoU=0.50      | area=   all | maxDets=1000 ] = 0.808
+Average Precision  (AP) @[ IoU=0.75      | area=   all | maxDets=1000 ] = 0.470
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Precision  (AP) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.445
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=100 ] = 0.513
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=300 ] = 0.513
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=   all | maxDets=1000 ] = 0.513
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= small | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area=medium | maxDets=1000 ] = -1.000
+Average Recall     (AR) @[ IoU=0.50:0.95 | area= large | maxDets=1000 ] = 0.513
+2021-07-21 23:55:33,212 - mmdet - INFO - Saving checkpoint at 24 epochs
+2021-07-21 23:55:36,674 - mmdet - INFO - Exp name: cascade_rcnn_swin_base_sense.py
+2021-07-21 23:55:36,674 - mmdet - INFO - Epoch(val) [24][68]	bbox_mAP: 0.4450, bbox_mAP_50: 0.8080, bbox_mAP_75: 0.4700, bbox_mAP_s: -1.0000, bbox_mAP_m: -1.0000, bbox_mAP_l: 0.4450, bbox_mAP_copypaste: 0.445 0.808 0.470 -1.000 -1.000 0.445
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************

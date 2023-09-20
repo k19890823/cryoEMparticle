@@ -1,0 +1,53 @@
+apex is not installed
+apex is not installed
+Traceback (most recent call last):
+  File "./tools/train.py", line 15, in <module>
+    from mmdet.apis import set_random_seed, train_detector
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/apis/__init__.py", line 1, in <module>
+    from .inference import (async_inference_detector, inference_detector,
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/apis/inference.py", line 11, in <module>
+    from mmdet.datasets import replace_ImageToTensor
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/datasets/__init__.py", line 10, in <module>
+    from .utils import (NumClassCheckHook, get_loading_pipeline,
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/datasets/utils.py", line 9, in <module>
+    from mmdet.models.dense_heads import GARPNHead, RPNHead
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/__init__.py", line 1, in <module>
+    from .backbones import *  # noqa: F401,F403
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/backbones/__init__.py", line 13, in <module>
+    from .swin_transformer import SwinTransformer
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/backbones/swin_transformer.py", line 121
+    self.relu1 = nn.LeakyReLU(0.2, inplace=True) #新增
+                                                    ^
+TabError: inconsistent use of tabs and spaces in indentation
+Traceback (most recent call last):
+  File "./tools/train.py", line 15, in <module>
+    from mmdet.apis import set_random_seed, train_detector
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/apis/__init__.py", line 1, in <module>
+    from .inference import (async_inference_detector, inference_detector,
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/apis/inference.py", line 11, in <module>
+    from mmdet.datasets import replace_ImageToTensor
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/datasets/__init__.py", line 10, in <module>
+    from .utils import (NumClassCheckHook, get_loading_pipeline,
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/datasets/utils.py", line 9, in <module>
+    from mmdet.models.dense_heads import GARPNHead, RPNHead
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/__init__.py", line 1, in <module>
+    from .backbones import *  # noqa: F401,F403
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/backbones/__init__.py", line 13, in <module>
+    from .swin_transformer import SwinTransformer
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/backbones/swin_transformer.py", line 121
+    self.relu1 = nn.LeakyReLU(0.2, inplace=True) #新增
+                                                    ^
+TabError: inconsistent use of tabs and spaces in indentation
+Traceback (most recent call last):
+  File "/home/gsb/anaconda3/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/home/gsb/anaconda3/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/distributed/launch.py", line 260, in <module>
+    main()
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/distributed/launch.py", line 255, in main
+    raise subprocess.CalledProcessError(returncode=process.returncode,
+subprocess.CalledProcessError: Command '['/home/gsb/anaconda3/bin/python', '-u', './tools/train.py', '--local_rank=1', './configs/swin/cascade_rcnn_swin_base_sense1.py', '--launcher', 'pytorch']' returned non-zero exit status 1.
+*****************************************
+Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+*****************************************

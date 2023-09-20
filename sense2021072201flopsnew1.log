@@ -1,0 +1,37 @@
+apex is not installed
+Traceback (most recent call last):
+  File "tools/analysis_tools/get_flops.py", line 81, in <module>
+    main()
+  File "tools/analysis_tools/get_flops.py", line 71, in main
+    flops, params = get_model_complexity_info(model, input_shape)
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/mmcv/cnn/utils/flops_counter.py", line 104, in get_model_complexity_info
+    _ = flops_model(batch)
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/detectors/two_stage.py", line 94, in forward_dummy
+    x = self.extract_feat(img)
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/detectors/two_stage.py", line 82, in extract_feat
+    x = self.backbone(img)
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/backbones/swin_transformer.py", line 639, in forward
+    x_out, H, W, x, Wh, Ww = layer(x, Wh, Ww)
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/backbones/swin_transformer.py", line 411, in forward
+    x = blk(x, attn_mask)
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/backbones/swin_transformer.py", line 268, in forward
+    x = x + self.drop_path(self.mlp(self.norm2(x)))
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/data/dataset/fk-Swin-Transformer-Object-Detection/mmdet/models/backbones/swin_transformer.py", line 38, in forward
+    x = self.act(x)
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/nn/modules/module.py", line 727, in _call_impl
+    result = self.forward(*input, **kwargs)
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/nn/modules/activation.py", line 627, in forward
+    return F.gelu(input)
+  File "/home/gsb/anaconda3/lib/python3.8/site-packages/torch/nn/functional.py", line 1383, in gelu
+    return torch._C._nn.gelu(input)
+RuntimeError: CUDA out of memory. Tried to allocate 274.00 MiB (GPU 0; 23.70 GiB total capacity; 21.99 GiB already allocated; 2.56 MiB free; 22.32 GiB reserved in total by PyTorch)
